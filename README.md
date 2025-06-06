@@ -2,6 +2,21 @@
 
 This project is copy of the MobileNet image classification example from [tensorflow flutter-tflite](https://github.com/tensorflow/flutter-tflite/tree/main/example/image_classification_mobilenet).
 
+## Android Studio Installation
+
+You will need to download the Android Studio IDE. Instructions to do so are available [here](https://developer.android.com/studio/install).
+
+Then install Flutter and Dart plugins:
+
+```
+Android Studio > Preferences > Plugins (or Settings > Plugins on Windows)
+```
+
+Then install:
+
+- Flutter
+- Dart
+
 ## Flutter
 
 This project uses the Flutter framework.
@@ -10,17 +25,19 @@ Please, follow [this documentation](https://docs.flutter.dev/get-started/install
 
 After installing everything make sure the installation works correctly by using the `flutter doctor` command. See: [Flutter doctor](https://docs.flutter.dev/get-started/install/windows/mobile#run-flutter-doctor).
 
-## Android Studio Installation
-
-You will need to download the Android Studio IDE. Instructions to do so are available [here](https://developer.android.com/studio/install).
-
 ## Test with MobileNet model and labels
 
 To test the project with a pretrained mobilenet, you must first download the MobileNet TensorFlow Lite model and its corresponding labels. You can do this by running `sh ./scripts/download_model.sh` from the root folder of the repository.
 
 ## Using your own model weights
 
-The code below can be used to create a .tfile weight file from your model weights. When you've exported the .tfile weights file, put this weight file and the labels.txt under TFLClassify/app/src/main/ml/.
+First, install tflite-support-nightly:
+
+```
+pip install tflite-support-nightly
+```
+
+Then you can use the code below at the end of your notebook to create a .tfile weight file from your model weights. When you've exported the .tfile weights file, put this weight file and the labels.txt under `image_classification_flutter_tflite-main/assets/models` and follow the next step to get the project's dependencies and reload files.
 
 ```
 import tensorflow as tf
@@ -29,7 +46,7 @@ from tflite_support.metadata_writers import writer_utils
 
 # Task Library expects label files that are in the same format as the one below.
 LABEL_FILE = "labels.txt"
-SAVE_TO_PATH = "MyModel.tflite"
+SAVE_TO_PATH = "mobilenet_quant.tflite"
 
 # Create the labels file
 with open(LABEL_FILE, 'w') as label_file:
@@ -67,6 +84,16 @@ print(writer.get_metadata_json())
 writer_utils.save_file(writer.populate(), SAVE_TO_PATH)
 ```
 
+If you change the model or labels files names, you need to change the names inside the `image_classification_helper.dart` file as well.
+
+![Model Labels Paths](screenshots/model_labels_path.png)
+
+## Get project's dependencies
+
+Make sure to download the project dependencies and reload the assets (`models` and `labels`) by using `pub get` inside the `pubspec.yaml` file. If you change the model and labels files make sure to do `pub get` again.
+
+![Get dependencies](screenshots/get_dependencies.png)
+
 ## Testing your model on your smartphone
 
 Instructions are given below, but check the following link for further informations: https://developer.android.com/studio/run/device
@@ -94,7 +121,9 @@ Testing your model on an emulator
 
 **This is not necessary!** If you want to try with an emulator and your webcam you can do like so (on Android Studio) :
 
-1. Devices list -> AVD Manager -> Create virtual device... -> Phone -> Pixel 8a -> Tiramisu, API 33 -> Show Advanced Settings -> Camera : select your webcam here. -> Finish
+1. Devices Manager -> Create virtual device... -> Phone -> Pixel 8a -> Tiramisu, API 33 -> Show Advanced Settings -> Camera : select your webcam here. -> Finish
+
+![Create device](screenshots/create_device.png)
 
 Troubleshooting :
 
